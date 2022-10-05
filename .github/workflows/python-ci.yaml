@@ -89,7 +89,7 @@ jobs:
     # lint
     - name: calculate code complexity
       run: |
-        radon ${{ inputs.radonPath }} -a > /tmp/ci/radon.txt
+        radon cc ${{ inputs.radonPath }} -a > /tmp/ci/radon.txt
     - uses: actions/upload-artifact@v3
       if: failure()
       with:
