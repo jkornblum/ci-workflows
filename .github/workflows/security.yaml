@@ -87,7 +87,7 @@ jobs:
       run: curl -sSfL https://raw.githubusercontent.com/anchore/syft/main/install.sh | sh -s -- -b /usr/local/bin
     
     - name: run syft 
-      run: syft $Python_ROOT_DIR/lib/${{ inputs.pythonVersion }}/site-packages --file /tmp/ci/sbom.txt
+      run: syft $Python_ROOT_DIR/lib/python${{ inputs.pythonVersion }}/site-packages --file /tmp/ci/sbom.txt
     - uses: actions/upload-artifact@v3
       with:
         name: syft sBOM
