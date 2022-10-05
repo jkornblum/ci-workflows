@@ -63,3 +63,28 @@ jobs:
       with:
         name: bandit report
         path: /tmp/ci/bandit.txt
+      
+  sbom:
+    runs-on: ubuntu-22.04
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up Python ${{ inputs.pythonVersion }}
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ inputs.pythonVersion }}
+        cache-dependency-path: ${{ inputs.pythonRequirements }}
+    - name: install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        pip install -r requirements.dev.txt
+
+    - name: create tmp log directory
+      run: mkdir /tmp/ci
+
+    - name: install syft
+      run: curl -sSfL https://raw.githubusercontent.com/anchore/syft/main/install.sh | sh -s -- -b /usr/local/bin
+    
+    - run: echo '${{ steps.cp310.outputs.python-version }}'
+    - run: echo $Python_ROOT_DIR/lib/'${{ steps.cp310.outputs.python-version }}'/site-packages
