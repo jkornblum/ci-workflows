@@ -1,0 +1,55 @@
+# This workflow will install Python dependencies, run tests and lint with a single version of Python
+# For more information see: https://help.github.com/actions/language-and-framework-guides/using-python-with-github-actions
+
+name: Python CI
+
+on: 
+  workflow_call:
+    inputs:
+      pythonVersion:
+        description: The Python version to install
+        default: "3.10"
+        required: false
+        type: string
+      pythonRequirements:
+        description: Newline seperated list of requirements files
+        default: |
+          requirements.txt
+          requirements.dev.txt
+        required: false
+        type: string
+      pylintPath:
+        description: The space seperated paths and files to run pylint on
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  code-quality:
+
+    runs-on: ubuntu-22.04
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up Python ${{ inputs.pythonVersion }}
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ inputs.pythonVersion }}
+        cache-dependency-path: ${{ inputs.pythonRequirements }}
+    - name: install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        pip install -r requirements.dev.txt
+    
+    # lint
+    - name: lint with pylint
+      run: |
+        pylint ${{ inputs.pylintPath }} > /tmp/pylint/pylint.txt
+    - uses: actions/upload-artifact@v3
+      with:
+        name: upload pylint report
+        if: ${{ failure() }}
+        path: /tmp/pylint/pylint.txt
