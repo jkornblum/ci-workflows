@@ -35,6 +35,11 @@ on:
         description: The space seperated paths to check formatting
         required: true
         type: string
+      blackContinueOnError:
+        description: Continue workflow even on black check error
+        required: false
+        type: boolean
+        default: false
         
 
 permissions:
@@ -101,8 +106,8 @@ jobs:
 
     # formatting
     - name: check formatting
-      run: |
-        black ${{ inputs.blackPath }} --check > /tmp/ci/black.txt
+      run:  black ${{ inputs.blackPath }} --check > /tmp/ci/black.txt
+      continue-on-error: ${{ inputs.blackContinueOnError }}
     - uses: actions/upload-artifact@v3
       if: failure()
       with:
