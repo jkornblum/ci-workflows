@@ -43,13 +43,16 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
         pip install -r requirements.dev.txt
-    
+
+    - name: create tmp log directory
+      run: mkdir /tmp/ci
+
     # lint
     - name: lint with pylint
       run: |
-        pylint ${{ inputs.pylintPath }} > /tmp/pylint/pylint.txt
+        pylint ${{ inputs.pylintPath }} --output /tmp/ci/pylint.txt
     - uses: actions/upload-artifact@v3
       if: failure()
       with:
         name: upload pylint report
-        path: /tmp/pylint/pylint.txt
+        path: /tmp/ci/pylint.txt
