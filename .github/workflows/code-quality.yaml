@@ -45,8 +45,9 @@ on:
 permissions:
   contents: read
 
+
 jobs:
-  pylint:
+  lint:
     runs-on: ubuntu-22.04
 
     steps:
