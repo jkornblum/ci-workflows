@@ -31,6 +31,10 @@ on:
         description: The space seperated paths to calculate code complexity
         required: true
         type: string
+      blackPath:
+        description: The space seperated paths to check formatting
+        required: true
+        type: string
         
 
 permissions:
@@ -86,14 +90,22 @@ jobs:
     - name: create tmp log directory
       run: mkdir /tmp/ci
 
-    # lint
+    # complexity
     - name: calculate code complexity
       run: |
         radon cc ${{ inputs.radonPath }} -a > /tmp/ci/radon.txt
     - uses: actions/upload-artifact@v3
-      if: failure()
       with:
         name: radon code complexity
         path: /tmp/ci/radon.txt
 
+    # formatting
+    - name: check formatting
+      run: |
+        black ${{ inputs.blackPath }} --check > /tmp/ci/black.txt
+    - uses: actions/upload-artifact@v3
+      if: failure()
+      with:
+        name: black formatting 
+        path: /tmp/ci/black.txt
   
