@@ -49,7 +49,7 @@ jobs:
       run: |
         pylint ${{ inputs.pylintPath }} > /tmp/pylint/pylint.txt
     - uses: actions/upload-artifact@v3
+      if: failure()
       with:
         name: upload pylint report
-        if: ${{ failure() }}
         path: /tmp/pylint/pylint.txt
